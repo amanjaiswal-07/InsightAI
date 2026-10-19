@@ -6,6 +6,8 @@ InsightAI is a full-stack AI analytics assistant. Upload CSV/Excel files and PDF
 
 ![CI](https://github.com/amanjaiswal-07/InsightAI/actions/workflows/ci.yml/badge.svg)
 
+**Contents:** [Screenshots](#screenshots) · [Why](#why-this-exists) · [Features](#key-features) · [Tech stack](#tech-stack) · [Architecture](#architecture) · [How it works](#how-it-works) · [Project structure](#project-structure) · [Getting started](#getting-started) · [Deployment](#deployment) · [Using it](#using-it) · [Configuration](#configuration) · [API](#api) · [Data model](#data-model) · [Testing and evaluation](#testing-and-evaluation) · [Limitations](#known-limitations) · [Future work](#future-improvements) · [Author](#author)
+
 ## Screenshots
 
 These are captured from the app running locally on the files in [`sample_data/`](sample_data). There is no hosted demo yet; see [Getting started](#getting-started) to run it yourself.
@@ -17,6 +19,10 @@ These are captured from the app running locally on the files in [`sample_data/`]
 **Document answer with source:** a question about an uploaded Word file is routed to RAG and answered with a citation.
 
 ![Document answer citing the source file](docs/screenshots/chat-document-answer.jpg)
+
+**Hallucination guard and hybrid answer:** a question the documents can't answer is refused instead of guessed. A "why + numbers" question combines SQL figures with document context.
+
+![Refused out-of-scope question and a hybrid SQL plus document answer](docs/screenshots/chat-refusal-and-hybrid.jpg)
 
 **Forecast tab:** Prophet forecast of a chosen column, with the AI-written summary and flagged anomalies.
 
@@ -87,21 +93,117 @@ flowchart LR
 
 Agents never call each other directly: the orchestrator wraps each one as an A2A peer and sends messages through `protocols/a2a.py`'s registry.
 
-### Query flow
+## How it works
 
-1. **Classify** (`agents/orchestrator.py`), cheapest rules first:
-   1. Greeting / general knowledge → `GENERAL`
-   2. Forecast keywords + a CSV in the session (and not a historical question) → `FORECAST`
-   3. No uploads → `GENERAL`; documents only → `DOCUMENT`
-   4. Chart request on CSV data → `SQL`
-   5. CSV and documents both present: score question words against each source's unique vocabulary, using reranker dominance as a tie-breaker → `SQL` / `DOCUMENT` / `HYBRID`
-   6. Causal or comparison wording ("why", "compare") → `HYBRID`
-   7. Fast regex router, then an LLM classifier at temperature 0 as the last resort
-2. **Execute** the chosen agent(s).
-   - **SQL agent:** schema with sample values → SQL → sanitise → read-only guard → execute → one self-correction retry on error → explanation. A single number skips the explanation LLM.
-   - **RAG agent:** BM25 + FAISS (k=10) → dedupe → cross-encoder rerank (top 3) → threshold check → answer from those 3 chunks with citations.
-   - **Forecast agent:** load the session's table → detect date and value columns → infer frequency → Prophet fit → anomalies → narrative.
-3. **Respond:** `/query/stream` sends a `meta` event (routing, chart, data, SQL, sources), then `token` events, then `done`. The reply and its chart are saved to chat history.
+### End-to-end workflow
+
+From uploading files to a streamed answer:
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as React UI
+    participant API as FastAPI
+    participant IDX as Indexer (background)
+    participant ORC as Orchestrator
+    participant AG as Agent(s)
+    participant LLM as Groq LLM
+
+    User->>UI: Upload CSV / XLSX / PDF / DOCX / TXT
+    UI->>API: POST /upload
+    API-->>UI: accepted, processing
+    API->>IDX: index files
+    IDX->>IDX: CSV to SQLite table + narrative chunks
+    IDX->>IDX: documents to chunks, embeddings into FAISS
+    UI->>API: poll /processing-status
+    API-->>UI: ready
+
+    User->>UI: Ask a question
+    UI->>API: POST /query/stream
+    API->>ORC: route_query()
+    ORC->>ORC: rule cascade, LLM fallback
+    ORC->>AG: A2A message (SQL, RAG, Forecast or both)
+    AG->>LLM: write SQL / answer from context / narrative
+    LLM-->>AG: text
+    AG-->>ORC: answer, rows, chart spec, sources
+    ORC-->>API: result
+    API-->>UI: SSE meta (routing, chart, SQL, sources)
+    API->>API: save reply + chart to chat history
+    API-->>UI: SSE tokens, then done
+```
+
+### Query routing
+
+`agents/orchestrator.py` tries the cheapest rules first and only asks the LLM when the rules can't decide (simplified):
+
+```mermaid
+flowchart TD
+    Q[Question] --> G{Greeting or general knowledge?}
+    G -- yes --> GEN([GENERAL: LLM directly])
+    G -- no --> F{Forecast wording and a CSV uploaded?}
+    F -- yes --> FC([FORECAST: Prophet agent])
+    F -- no --> U{What has been uploaded?}
+    U -- nothing --> GEN
+    U -- documents only --> DOC([DOCUMENT: RAG agent])
+    U -- CSV --> C{Chart request?}
+    C -- yes --> SQL([SQL: SQL agent])
+    C -- no --> M{CSV and documents both present?}
+    M -- yes --> V{Vocabulary vote, rerank tie-break}
+    V -- CSV terms --> SQL
+    V -- document terms --> DOC
+    V -- mixed or cross-source wording --> HY([HYBRID: SQL + RAG])
+    M -- no --> K{Causal or comparison wording?}
+    K -- yes --> HY
+    K -- no --> R[Regex router, then LLM classifier]
+    R --> SQL
+    R --> DOC
+    R --> HY
+```
+
+### SQL agent: generation, validation, self-correction
+
+```mermaid
+flowchart TD
+    Q[Question] --> S[Schema + real column values]
+    S --> L1[LLM writes SQLite]
+    L1 --> SAN[Sanitise: strip fences, fix bare aggregates]
+    SAN --> NORM[Normalise literals to stored values]
+    NORM --> GUARD{Read-only guard}
+    GUARD --> EX[Execute on read-only connection]
+    EX --> OK{Succeeded?}
+    OK -- no --> FIX[LLM fixes SQL using the error, once] --> GUARD
+    OK -- yes --> ONE{Single number?}
+    ONE -- yes --> FAST[Direct answer, no extra LLM call]
+    ONE -- no --> EXP[LLM explanation + chart spec]
+```
+
+A failed retry is returned as a clear error rather than looping.
+
+### Ingestion and RAG pipeline
+
+```mermaid
+flowchart LR
+    subgraph Ingest
+        CSV[CSV / XLSX] --> TBL[(SQLite table)]
+        CSV --> NAR[Row narratives, group summaries, dataset overview]
+        DOCS[PDF / DOCX / TXT] --> PAR[Chunks, headings kept with their content]
+        NAR --> EMB[MiniLM embeddings] --> FAISS[(FAISS)]
+        PAR --> EMB
+        NAR --> BM[(BM25 corpus)]
+        PAR --> BM
+    end
+    subgraph Answer
+        QU[Question] --> HYB[BM25 + FAISS, top 10]
+        HYB --> RR[Cross-encoder rerank, top 3]
+        RR --> LOW{Top score low?}
+        LOW -- yes --> EXP[LLM query expansion, re-retrieve, rerank] --> TH
+        LOW -- no --> TH{Relevant enough?}
+        TH -- no --> NA([Not available in the uploaded documents])
+        TH -- yes --> ANS([Answer from top 3 chunks + source file])
+    end
+```
+
+The **forecast agent** loads only the session's own table, detects the date and value columns, infers the frequency (daily, weekly, monthly, quarterly), fits Prophet with 95% intervals, flags points outside the interval as anomalies, and asks the LLM for a short business summary. A template summary is used if the LLM is unavailable.
 
 ## Project structure
 
@@ -204,7 +306,7 @@ As of October 2026, Hugging Face requires a paid plan (PRO) for Docker Spaces; o
 
 1. Create a Space at <https://huggingface.co/new-space> and choose **Docker** (blank template).
 2. In the Space's **Settings → Variables and secrets**, add the secret `GROQ_API_KEY`. Optionally add `API_KEYS` as well.
-3. Push this repository to the Space's git remote:
+3. Push the code to the Space's git remote. Hugging Face rejects binary files that are not in Git LFS, so track the sample `.docx`/`.xlsx` files with `git lfs track "*.docx" "*.xlsx"` in a fresh snapshot of the repo first:
 
    ```bash
    git remote add space https://huggingface.co/spaces/<your-user>/<space-name>
@@ -221,7 +323,6 @@ The Space's README needs Hugging Face front matter (`sdk: docker`, `app_port: 78
 Notes:
 
 - Every visitor uses **your** Groq quota.
-- Free Spaces sleep after a period of inactivity.
 - Uploaded files and sessions are wiped whenever the Space restarts.
 
 ## Using it
@@ -374,3 +475,10 @@ These are *not* implemented yet:
 ## License
 
 [MIT](LICENSE)
+
+## Author
+
+**Aman Jaiswal**
+
+- LinkedIn: [linkedin.com/in/aman-jaiswal-aa31b51b5](https://www.linkedin.com/in/aman-jaiswal-aa31b51b5)
+- GitHub: [@amanjaiswal-07](https://github.com/amanjaiswal-07)
