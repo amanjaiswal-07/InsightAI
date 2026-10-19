@@ -18,6 +18,11 @@ from config import settings
 
 def make_llm(temperature: float, max_tokens: Optional[int] = None) -> ChatGroq:
     """Return a configured ChatGroq client."""
+    if not settings.GROQ_API_KEY:
+        raise RuntimeError(
+            "GROQ_API_KEY is not set. Copy .env.example to .env and add a key "
+            "from https://console.groq.com/keys"
+        )
     kwargs = {
         "api_key":     settings.GROQ_API_KEY,
         "model":       settings.LLM_MODEL,
