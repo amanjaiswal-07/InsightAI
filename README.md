@@ -6,6 +6,22 @@ InsightAI is a full-stack AI analytics assistant. Upload CSV/Excel files and PDF
 
 ![CI](https://github.com/amanjaiswal-07/InsightAI/actions/workflows/ci.yml/badge.svg)
 
+## Screenshots
+
+These are captured from the app running locally on the files in [`sample_data/`](sample_data). There is no hosted demo yet; see [Getting started](#getting-started) to run it yourself.
+
+**SQL answer with chart:** "Show a bar chart of total revenue by region" is routed to the SQL agent, answered from the uploaded CSV, and charted.
+
+![SQL answer with bar chart](docs/screenshots/chat-sql-chart.jpg)
+
+**Document answer with source:** a question about an uploaded Word file is routed to RAG and answered with a citation.
+
+![Document answer citing the source file](docs/screenshots/chat-document-answer.jpg)
+
+**Forecast tab:** Prophet forecast of a chosen column, with the AI-written summary and flagged anomalies.
+
+![Prophet forecast with actual vs forecast series](docs/screenshots/forecast-tab.jpg)
+
 ---
 
 ## Why this exists
@@ -115,7 +131,7 @@ InsightAI/
 ├── evaluation/              Live LLM evaluation harness + latest report
 ├── scripts/benchmark.py     HTTP benchmark against a running server
 ├── sample_data/             Example CSV / XLSX / DOCX / TXT files to try
-├── Dockerfile               Single container: API + built UI (used for Hugging Face Spaces)
+├── Dockerfile               Single container: API + built UI (any Docker host)
 └── .github/workflows/ci.yml Tests + frontend build on every push
 ```
 
@@ -178,11 +194,15 @@ docker build -t insightai .
 docker run -p 7860:7860 -e GROQ_API_KEY=your_key insightai
 ```
 
-## Deployment (Hugging Face Spaces)
+## Deployment
 
-The repo includes a `Dockerfile` that builds the React UI and serves it from FastAPI on port 7860. That is the layout Hugging Face Docker Spaces expect, and the free CPU tier has enough RAM for torch and the two models.
+The repo includes a `Dockerfile` that builds the React UI and serves it from FastAPI on port 7860, so the whole app is one container. Give it at least about 2 GB of RAM: torch, the two models and Prophet do not fit in 512 MB free tiers. Any host that runs a Docker image works, for example Google Cloud Run or a small VM.
 
-1. Create a Space at <https://huggingface.co/new-space> and choose **Docker** (blank template, free CPU).
+### Hugging Face Spaces
+
+As of October 2026, Hugging Face requires a paid plan (PRO) for Docker Spaces; only static Spaces are free.
+
+1. Create a Space at <https://huggingface.co/new-space> and choose **Docker** (blank template).
 2. In the Space's **Settings → Variables and secrets**, add the secret `GROQ_API_KEY`. Optionally add `API_KEYS` as well.
 3. Push this repository to the Space's git remote:
 
