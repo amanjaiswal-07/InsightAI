@@ -1,0 +1,87 @@
+======================================================================
+AI BUSINESS ANALYST — EVALUATION REPORT
+======================================================================
+
+Overall: 40/42 (95.2%)
+
+Routing Accuracy: 86.7% (13/15) — avg latency 2.86s
+SQL Correctness: 100.0% (8/8) — avg latency 8.45s
+RAG Faithfulness: 100.0% (5/5) — avg latency 1.33s
+RAG Refusal (hallucination guard): 100.0% (5/5) — avg latency 3.46s
+Language Detection: 100.0% (9/9) — avg latency 0.00s
+
+Routing confusion matrix (rows=expected, cols=actual):
+expected\actual document    forecast    general     hybrid      sql         
+document        4           0           0           0           0           
+forecast        0           2           0           0           0           
+general         0           0           2           0           0           
+hybrid          1           0           0           0           1           
+sql             0           0           0           0           5           
+
+----------------------------------------------------------------------
+Routing Accuracy
+----------------------------------------------------------------------
+[PASS] How many employees are in the database?
+[PASS] What is the average salary of engineers?
+[PASS] Count products in the Electronics category
+[PASS] Show total revenue by month
+[PASS] Who is the top sales rep by total_amount?
+[PASS] Summarize the strategic planning document
+[PASS] What are the action items from the meeting?
+[PASS] What budget was approved for AI integration?
+[PASS] What does the performance review say about the sales department?
+[FAIL] Explain the sales trend and show the underlying numbers
+       expected: hybrid
+       actual:   sql
+       detail:   routing_reason=Calculation on uploaded CSV
+[FAIL] Why did engineering perform well, and what were the department's total sales?
+       expected: hybrid
+       actual:   document
+       detail:   routing_reason=Document/semantic query
+[PASS] Forecast sales for the next 3 months
+[PASS] Predict revenue trend going forward
+[PASS] Hello, how are you?
+[PASS] What is machine learning?
+
+----------------------------------------------------------------------
+SQL Correctness
+----------------------------------------------------------------------
+[PASS] How many employees are in the database?
+[PASS] How many employees are in the Engineering department?
+[PASS] What is the average salary of employees in Engineering?
+[PASS] How many departments are represented among the employees?
+[PASS] What is the highest salary in the company?
+[PASS] What is the total quantity sold across all sales?
+[PASS] What is the total revenue across all sales?
+[PASS] How many sales transactions are there in total?
+
+----------------------------------------------------------------------
+RAG Faithfulness
+----------------------------------------------------------------------
+[PASS] What budget was approved for AI integration in the strategic plan?
+[PASS] By when should Alice finalize the AI architecture?
+[PASS] What is the target Monthly Recurring Revenue by June?
+[PASS] What was the quarterly target achievement percentage for the sales department?
+[PASS] What was the average performance rating for the engineering department?
+
+----------------------------------------------------------------------
+RAG Refusal (hallucination guard)
+----------------------------------------------------------------------
+[PASS] What is the CEO's home phone number?
+[PASS] What were Apple's Q4 2024 earnings per share?
+[PASS] Who won the 2024 US presidential election?
+[PASS] What is the exact current stock price of this company?
+[PASS] What is my social security number?
+
+----------------------------------------------------------------------
+Language Detection
+----------------------------------------------------------------------
+[PASS] How many employees work here?
+[PASS] ¿Cuántos empleados trabajan aquí?
+[PASS] Combien d'employés travaillent ici?
+[PASS] Wie viele Mitarbeiter arbeiten hier?
+[PASS] यहाँ कितने कर्मचारी काम करते हैं?
+[PASS] 这里有多少员工？
+[PASS] ここに何人の従業員がいますか？
+[PASS] كم عدد الموظفين الذين يعملون هنا؟
+[PASS] Quantos funcionários trabalham aqui?

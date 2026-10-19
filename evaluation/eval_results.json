@@ -1,0 +1,414 @@
+{
+  "generated_at": "2026-10-20 02:12:24",
+  "overall_accuracy": 0.9523809523809523,
+  "suites": [
+    {
+      "name": "Routing Accuracy",
+      "accuracy": 0.8666666666666667,
+      "avg_latency_s": 2.8630767822265626,
+      "cases": [
+        {
+          "question": "How many employees are in the database?",
+          "expected": "sql",
+          "actual": "sql",
+          "passed": true,
+          "latency_s": 1.896,
+          "detail": "routing_reason=Calculation on uploaded CSV"
+        },
+        {
+          "question": "What is the average salary of engineers?",
+          "expected": "sql",
+          "actual": "sql",
+          "passed": true,
+          "latency_s": 0.944,
+          "detail": "routing_reason=Calculation on uploaded CSV"
+        },
+        {
+          "question": "Count products in the Electronics category",
+          "expected": "sql",
+          "actual": "sql",
+          "passed": true,
+          "latency_s": 0.771,
+          "detail": "routing_reason=Calculation on uploaded CSV"
+        },
+        {
+          "question": "Show total revenue by month",
+          "expected": "sql",
+          "actual": "sql",
+          "passed": true,
+          "latency_s": 1.305,
+          "detail": "routing_reason=Calculation on uploaded CSV"
+        },
+        {
+          "question": "Who is the top sales rep by total_amount?",
+          "expected": "sql",
+          "actual": "sql",
+          "passed": true,
+          "latency_s": 2.232,
+          "detail": "routing_reason=Calculation on uploaded CSV"
+        },
+        {
+          "question": "Summarize the strategic planning document",
+          "expected": "document",
+          "actual": "document",
+          "passed": true,
+          "latency_s": 1.394,
+          "detail": "routing_reason=Document/semantic query"
+        },
+        {
+          "question": "What are the action items from the meeting?",
+          "expected": "document",
+          "actual": "document",
+          "passed": true,
+          "latency_s": 1.033,
+          "detail": "routing_reason=Document/semantic query"
+        },
+        {
+          "question": "What budget was approved for AI integration?",
+          "expected": "document",
+          "actual": "document",
+          "passed": true,
+          "latency_s": 0.395,
+          "detail": "routing_reason=Document/semantic query"
+        },
+        {
+          "question": "What does the performance review say about the sales department?",
+          "expected": "document",
+          "actual": "document",
+          "passed": true,
+          "latency_s": 0.82,
+          "detail": "routing_reason=Document/semantic query"
+        },
+        {
+          "question": "Explain the sales trend and show the underlying numbers",
+          "expected": "hybrid",
+          "actual": "sql",
+          "passed": false,
+          "latency_s": 15.475,
+          "detail": "routing_reason=Calculation on uploaded CSV"
+        },
+        {
+          "question": "Why did engineering perform well, and what were the department's total sales?",
+          "expected": "hybrid",
+          "actual": "document",
+          "passed": false,
+          "latency_s": 4.68,
+          "detail": "routing_reason=Document/semantic query"
+        },
+        {
+          "question": "Forecast sales for the next 3 months",
+          "expected": "forecast",
+          "actual": "forecast",
+          "passed": true,
+          "latency_s": 4.528,
+          "detail": "routing_reason=Time series forecast via A2A \u2192 Prophet"
+        },
+        {
+          "question": "Predict revenue trend going forward",
+          "expected": "forecast",
+          "actual": "forecast",
+          "passed": true,
+          "latency_s": 4.051,
+          "detail": "routing_reason=Time series forecast via A2A \u2192 Prophet"
+        },
+        {
+          "question": "Hello, how are you?",
+          "expected": "general",
+          "actual": "general",
+          "passed": true,
+          "latency_s": 2.377,
+          "detail": "routing_reason=Conversational or general knowledge query"
+        },
+        {
+          "question": "What is machine learning?",
+          "expected": "general",
+          "actual": "general",
+          "passed": true,
+          "latency_s": 1.045,
+          "detail": "routing_reason=Conversational or general knowledge query"
+        }
+      ]
+    },
+    {
+      "name": "SQL Correctness",
+      "accuracy": 1.0,
+      "avg_latency_s": 8.451623111963272,
+      "cases": [
+        {
+          "question": "How many employees are in the database?",
+          "expected": 10,
+          "actual": 10.0,
+          "passed": true,
+          "latency_s": 9.746,
+          "detail": "sql='SELECT COUNT(*) AS employee_count\\nFROM upload_eval_sql_eval_employees_export'"
+        },
+        {
+          "question": "How many employees are in the Engineering department?",
+          "expected": 4,
+          "actual": 4.0,
+          "passed": true,
+          "latency_s": 10.749,
+          "detail": "sql=\"SELECT COUNT(*) AS employee_count\\nFROM upload_eval_sql_eval_employees_export\\nWHERE department_name = 'Engineering'\""
+        },
+        {
+          "question": "What is the average salary of employees in Engineering?",
+          "expected": 104250.0,
+          "actual": 104250.0,
+          "passed": true,
+          "latency_s": 24.591,
+          "detail": "sql=\"SELECT ROUND(AVG(salary), 2) AS avg_salary\\nFROM upload_eval_sql_eval_employees_export\\nWHERE department_name = 'Engineering'\""
+        },
+        {
+          "question": "How many departments are represented among the employees?",
+          "expected": 5,
+          "actual": 5.0,
+          "passed": true,
+          "latency_s": 0.388,
+          "detail": "sql='SELECT COUNT(DISTINCT department_name) AS department_count\\nFROM upload_eval_sql_eval_employees_export'"
+        },
+        {
+          "question": "What is the highest salary in the company?",
+          "expected": 120000,
+          "actual": 120000.0,
+          "passed": true,
+          "latency_s": 1.777,
+          "detail": "sql='SELECT MAX(salary) AS highest_salary\\nFROM upload_eval_sql_eval_employees_export'"
+        },
+        {
+          "question": "What is the total quantity sold across all sales?",
+          "expected": 160,
+          "actual": 160.0,
+          "passed": true,
+          "latency_s": 0.915,
+          "detail": "sql='SELECT ROUND(SUM(quantity), 2) AS total_quantity\\nFROM upload_eval_sql_eval_sales_export'"
+        },
+        {
+          "question": "What is the total revenue across all sales?",
+          "expected": 47148.4,
+          "actual": 47148.4,
+          "passed": true,
+          "latency_s": 12.963,
+          "detail": "sql='SELECT ROUND(SUM(total_amount), 2) AS total_revenue\\nFROM upload_eval_sql_eval_sales_export'"
+        },
+        {
+          "question": "How many sales transactions are there in total?",
+          "expected": 8,
+          "actual": 8.0,
+          "passed": true,
+          "latency_s": 6.485,
+          "detail": "sql='SELECT COUNT(*) AS total_transactions\\nFROM upload_eval_sql_eval_sales_export'"
+        }
+      ]
+    },
+    {
+      "name": "RAG Faithfulness",
+      "accuracy": 1.0,
+      "avg_latency_s": 1.3340188026428224,
+      "cases": [
+        {
+          "question": "What budget was approved for AI integration in the strategic plan?",
+          "expected": "[['500', '$500']]",
+          "actual": "**$500k** was approved for ai integration. *source: strategic_planning_jan2025.docx*",
+          "passed": true,
+          "latency_s": 0.613,
+          "detail": "all facts present"
+        },
+        {
+          "question": "By when should Alice finalize the AI architecture?",
+          "expected": "[['jan 20', 'january 20']]",
+          "actual": "alice should finalize the ai architecture **by jan 20**. *sources: performance_review_q4.docx, strategic_planning_jan2025.docx*",
+          "passed": true,
+          "latency_s": 0.868,
+          "detail": "all facts present"
+        },
+        {
+          "question": "What is the target Monthly Recurring Revenue by June?",
+          "expected": "[['750', '$750']]",
+          "actual": "**$750k by june** *sources: performance_review_q4.docx, strategic_planning_jan2025.docx*",
+          "passed": true,
+          "latency_s": 0.602,
+          "detail": "all facts present"
+        },
+        {
+          "question": "What was the quarterly target achievement percentage for the sales department?",
+          "expected": "[['115']]",
+          "actual": "the sales department achieved a quarterly target of **115%**. *sources: performance_review_q4.docx, strategic_planning_jan2025.docx*",
+          "passed": true,
+          "latency_s": 1.526,
+          "detail": "all facts present"
+        },
+        {
+          "question": "What was the average performance rating for the engineering department?",
+          "expected": "[['4.3']]",
+          "actual": "the average performance rating for the engineering department was **4.3/5.0**. *source: performance_review_q4.docx*",
+          "passed": true,
+          "latency_s": 3.062,
+          "detail": "all facts present"
+        }
+      ]
+    },
+    {
+      "name": "RAG Refusal (hallucination guard)",
+      "accuracy": 1.0,
+      "avg_latency_s": 3.458345890045166,
+      "cases": [
+        {
+          "question": "What is the CEO's home phone number?",
+          "expected": "should refuse",
+          "actual": "this information is not available in the uploaded documents.",
+          "passed": true,
+          "latency_s": 0.865,
+          "detail": "correctly refused"
+        },
+        {
+          "question": "What were Apple's Q4 2024 earnings per share?",
+          "expected": "should refuse",
+          "actual": "this information is not available in the uploaded documents.",
+          "passed": true,
+          "latency_s": 5.609,
+          "detail": "correctly refused"
+        },
+        {
+          "question": "Who won the 2024 US presidential election?",
+          "expected": "should refuse",
+          "actual": "this information is not available in the uploaded documents.",
+          "passed": true,
+          "latency_s": 2.987,
+          "detail": "correctly refused"
+        },
+        {
+          "question": "What is the exact current stock price of this company?",
+          "expected": "should refuse",
+          "actual": "this information is not available in the uploaded documents.",
+          "passed": true,
+          "latency_s": 5.89,
+          "detail": "correctly refused"
+        },
+        {
+          "question": "What is my social security number?",
+          "expected": "should refuse",
+          "actual": "this information is not available in the uploaded documents.",
+          "passed": true,
+          "latency_s": 1.941,
+          "detail": "correctly refused"
+        }
+      ]
+    },
+    {
+      "name": "Language Detection",
+      "accuracy": 1.0,
+      "avg_latency_s": 0.0027235878838433158,
+      "cases": [
+        {
+          "question": "How many employees work here?",
+          "expected": "en",
+          "actual": "en",
+          "passed": true,
+          "latency_s": 0.003,
+          "detail": ""
+        },
+        {
+          "question": "\u00bfCu\u00e1ntos empleados trabajan aqu\u00ed?",
+          "expected": "es",
+          "actual": "es",
+          "passed": true,
+          "latency_s": 0.004,
+          "detail": ""
+        },
+        {
+          "question": "Combien d'employ\u00e9s travaillent ici?",
+          "expected": "fr",
+          "actual": "fr",
+          "passed": true,
+          "latency_s": 0.011,
+          "detail": ""
+        },
+        {
+          "question": "Wie viele Mitarbeiter arbeiten hier?",
+          "expected": "de",
+          "actual": "de",
+          "passed": true,
+          "latency_s": 0.002,
+          "detail": ""
+        },
+        {
+          "question": "\u092f\u0939\u093e\u0901 \u0915\u093f\u0924\u0928\u0947 \u0915\u0930\u094d\u092e\u091a\u093e\u0930\u0940 \u0915\u093e\u092e \u0915\u0930\u0924\u0947 \u0939\u0948\u0902?",
+          "expected": "hi",
+          "actual": "hi",
+          "passed": true,
+          "latency_s": 0.0,
+          "detail": ""
+        },
+        {
+          "question": "\u8fd9\u91cc\u6709\u591a\u5c11\u5458\u5de5\uff1f",
+          "expected": "zh-cn",
+          "actual": "zh-cn",
+          "passed": true,
+          "latency_s": 0.0,
+          "detail": ""
+        },
+        {
+          "question": "\u3053\u3053\u306b\u4f55\u4eba\u306e\u5f93\u696d\u54e1\u304c\u3044\u307e\u3059\u304b\uff1f",
+          "expected": "ja",
+          "actual": "ja",
+          "passed": true,
+          "latency_s": 0.0,
+          "detail": ""
+        },
+        {
+          "question": "\u0643\u0645 \u0639\u062f\u062f \u0627\u0644\u0645\u0648\u0638\u0641\u064a\u0646 \u0627\u0644\u0630\u064a\u0646 \u064a\u0639\u0645\u0644\u0648\u0646 \u0647\u0646\u0627\u061f",
+          "expected": "ar",
+          "actual": "ar",
+          "passed": true,
+          "latency_s": 0.0,
+          "detail": ""
+        },
+        {
+          "question": "Quantos funcion\u00e1rios trabalham aqui?",
+          "expected": "pt",
+          "actual": "pt",
+          "passed": true,
+          "latency_s": 0.005,
+          "detail": ""
+        }
+      ]
+    }
+  ],
+  "routing_confusion_matrix": {
+    "document": {
+      "document": 4,
+      "forecast": 0,
+      "general": 0,
+      "hybrid": 0,
+      "sql": 0
+    },
+    "forecast": {
+      "document": 0,
+      "forecast": 2,
+      "general": 0,
+      "hybrid": 0,
+      "sql": 0
+    },
+    "general": {
+      "document": 0,
+      "forecast": 0,
+      "general": 2,
+      "hybrid": 0,
+      "sql": 0
+    },
+    "hybrid": {
+      "document": 1,
+      "forecast": 0,
+      "general": 0,
+      "hybrid": 0,
+      "sql": 1
+    },
+    "sql": {
+      "document": 0,
+      "forecast": 0,
+      "general": 0,
+      "hybrid": 0,
+      "sql": 5
+    }
+  }
+}

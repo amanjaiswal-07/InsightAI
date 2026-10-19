@@ -1,0 +1,47 @@
+# ── Secrets ──────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Runtime data (all recreated automatically) ───────────────────────────────
+# SQLite DBs, FAISS vector stores and chat history
+data/
+# user-uploaded files
+uploads/
+logs/
+*.log
+*.db
+*.sqlite3
+benchmark_output/
+evaluation/_tmp/
+
+# ── Model caches ─────────────────────────────────────────────────────────────
+.cache/
+models/
+
+# ── Frontend ─────────────────────────────────────────────────────────────────
+node_modules/
+frontend/dist/
+
+# ── Editors / OS ─────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+.claude/

@@ -1,0 +1,41 @@
+PatientID,Age,Gender,Department,Diagnosis,AdmissionDate,DischargeDate,LengthOfStay_Days,TreatmentCost_USD,DoctorID,Insurance,Readmitted,SeverityScore,MedicationCount,OutcomeStatus
+P001,45,Male,Cardiology,Heart Failure,2024-01-03,2024-01-10,7,18500,D004,Yes,No,7,5,Discharged
+P002,67,Female,Neurology,Stroke,2024-01-05,2024-01-19,14,42000,D002,Yes,Yes,9,8,Discharged
+P003,32,Male,Orthopedics,Fracture,2024-01-07,2024-01-11,4,8200,D007,No,No,3,2,Discharged
+P004,78,Female,Cardiology,Arrhythmia,2024-01-08,2024-01-15,7,21000,D004,Yes,No,6,6,Discharged
+P005,55,Male,Oncology,Lung Cancer,2024-01-10,2024-01-24,14,67000,D001,Yes,Yes,10,9,Under Treatment
+P006,29,Female,Emergency,Appendicitis,2024-01-11,2024-01-13,2,5400,D009,No,No,4,1,Discharged
+P007,61,Male,Neurology,Parkinson,2024-01-12,2024-01-20,8,29000,D002,Yes,No,6,7,Discharged
+P008,44,Female,Oncology,Breast Cancer,2024-01-14,2024-01-28,14,58000,D001,Yes,No,8,8,Under Treatment
+P009,71,Male,Cardiology,Heart Attack,2024-01-15,2024-01-22,7,34000,D004,Yes,Yes,9,7,Discharged
+P010,38,Female,Orthopedics,Knee Replacement,2024-01-16,2024-01-21,5,12500,D007,Yes,No,4,3,Discharged
+P011,52,Male,Pulmonology,Asthma,2024-01-17,2024-01-20,3,6800,D005,No,No,4,4,Discharged
+P012,83,Female,Geriatrics,Dementia,2024-01-18,2024-02-01,14,38000,D008,Yes,Yes,8,10,Under Treatment
+P013,47,Male,Emergency,Trauma,2024-01-19,2024-01-23,4,11200,D009,No,No,6,3,Discharged
+P014,65,Female,Cardiology,Bypass Surgery,2024-01-20,2024-01-28,8,52000,D004,Yes,No,8,6,Discharged
+P015,39,Male,Pulmonology,Pneumonia,2024-01-21,2024-01-25,4,9100,D005,Yes,No,5,4,Discharged
+P016,58,Female,Neurology,Epilepsy,2024-01-22,2024-01-27,5,16500,D002,Yes,No,6,5,Discharged
+P017,72,Male,Oncology,Prostate Cancer,2024-01-23,2024-02-06,14,61000,D001,Yes,Yes,9,8,Under Treatment
+P018,34,Female,Emergency,Allergic Reaction,2024-01-24,2024-01-25,1,2100,D009,No,No,2,2,Discharged
+P019,49,Male,Cardiology,Angina,2024-01-25,2024-01-29,4,13500,D004,No,No,5,4,Discharged
+P020,76,Female,Geriatrics,Hip Fracture,2024-01-26,2024-02-04,9,27500,D008,Yes,Yes,7,6,Discharged
+P021,43,Male,Orthopedics,Spinal Disc,2024-01-27,2024-02-01,5,14800,D007,Yes,No,5,3,Discharged
+P022,60,Female,Pulmonology,COPD,2024-01-28,2024-02-03,6,17200,D005,Yes,Yes,7,6,Under Treatment
+P023,35,Male,Emergency,Burns,2024-01-29,2024-02-02,4,9800,D009,No,No,5,2,Discharged
+P024,68,Female,Oncology,Ovarian Cancer,2024-01-30,2024-02-13,14,72000,D001,Yes,No,9,9,Under Treatment
+P025,54,Male,Neurology,Multiple Sclerosis,2024-01-31,2024-02-07,7,24000,D002,Yes,No,6,7,Discharged
+P026,41,Female,Cardiology,Heart Failure,2024-02-01,2024-02-07,6,16800,D004,Yes,No,6,5,Discharged
+P027,79,Male,Geriatrics,Parkinson,2024-02-02,2024-02-12,10,31000,D008,Yes,Yes,8,9,Under Treatment
+P028,30,Female,Orthopedics,Sports Injury,2024-02-03,2024-02-06,3,6900,D007,No,No,3,2,Discharged
+P029,57,Male,Pulmonology,Tuberculosis,2024-02-04,2024-02-13,9,22000,D005,Yes,No,7,5,Discharged
+P030,66,Female,Neurology,Stroke,2024-02-05,2024-02-16,11,38500,D002,Yes,Yes,9,8,Discharged
+P031,48,Male,Emergency,Poisoning,2024-02-06,2024-02-09,3,7600,D009,No,No,5,3,Discharged
+P032,73,Female,Cardiology,Arrhythmia,2024-02-07,2024-02-13,6,19500,D004,Yes,No,7,6,Discharged
+P033,36,Male,Oncology,Lymphoma,2024-02-08,2024-02-22,14,55000,D001,Yes,No,8,7,Under Treatment
+P034,62,Female,Geriatrics,Osteoporosis,2024-02-09,2024-02-15,6,14200,D008,Yes,No,5,5,Discharged
+P035,50,Male,Pulmonology,Sleep Apnea,2024-02-10,2024-02-13,3,7400,D005,No,No,3,2,Discharged
+P036,45,Female,Neurology,Migraine,2024-02-11,2024-02-13,2,4800,D002,No,No,3,3,Discharged
+P037,69,Male,Cardiology,Heart Attack,2024-02-12,2024-02-20,8,37500,D004,Yes,Yes,9,7,Discharged
+P038,27,Female,Emergency,Fracture,2024-02-13,2024-02-16,3,5600,D009,No,No,3,1,Discharged
+P039,55,Male,Oncology,Colon Cancer,2024-02-14,2024-02-28,14,63000,D001,Yes,Yes,9,8,Under Treatment
+P040,80,Female,Geriatrics,Dementia,2024-02-15,2024-02-25,10,34000,D008,Yes,Yes,9,10,Under Treatment

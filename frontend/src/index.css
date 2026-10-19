@@ -1,0 +1,359 @@
+@import "tailwindcss";
+
+/* ── Design tokens ──────────────────────────────────────────────────── */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #fafafa;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #e8e8ea;
+  --border-strong: #d8d8dc;
+
+  --text: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #94949c;
+
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --accent-soft: #eef0fe;
+  --accent-text: #4338ca;
+
+  --blue: #0ea5e9;
+  --blue-soft: #e6f6fd;
+  --amber: #f59e0b;
+  --amber-soft: #fef3e0;
+  --purple: #a855f7;
+  --purple-soft: #f6ecff;
+  --green: #10b981;
+  --green-soft: #e7f9f2;
+  --red: #ef4444;
+  --red-soft: #fdecec;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 1px 2px rgba(20, 20, 30, .04);
+  --shadow: 0 1px 3px rgba(20, 20, 30, .06), 0 4px 12px -4px rgba(20, 20, 30, .06);
+  --shadow-lg: 0 8px 24px -6px rgba(20, 20, 30, .12), 0 2px 8px -2px rgba(20, 20, 30, .06);
+  --shadow-focus: 0 0 0 3px var(--accent-soft);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+  --sidebar-w: 272px;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b0b0f;
+  --bg-subtle: #101014;
+  --surface: #17171d;
+  --surface-raised: #1c1c23;
+  --border: #26262f;
+  --border-strong: #34343f;
+
+  --text: #f4f4f6;
+  --text-secondary: #a4a4b0;
+  --text-muted: #6c6c78;
+
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-soft: #23233a;
+  --accent-text: #a5b4fc;
+
+  --blue-soft: #0c2634;
+  --amber-soft: #2c2109;
+  --purple-soft: #241a33;
+  --green-soft: #0c2a22;
+  --red-soft: #2c1414;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 4px 16px -4px rgba(0, 0, 0, .5);
+  --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, .6), 0 2px 8px -2px rgba(0, 0, 0, .4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0b0f;
+    --bg-subtle: #101014;
+    --surface: #17171d;
+    --surface-raised: #1c1c23;
+    --border: #26262f;
+    --border-strong: #34343f;
+
+    --text: #f4f4f6;
+    --text-secondary: #a4a4b0;
+    --text-muted: #6c6c78;
+
+    --accent: #818cf8;
+    --accent-hover: #a5b4fc;
+    --accent-soft: #23233a;
+    --accent-text: #a5b4fc;
+
+    --blue-soft: #0c2634;
+    --amber-soft: #2c2109;
+    --purple-soft: #241a33;
+    --green-soft: #0c2a22;
+    --red-soft: #2c1414;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 4px 16px -4px rgba(0, 0, 0, .5);
+    --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, .6), 0 2px 8px -2px rgba(0, 0, 0, .4);
+  }
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────── */
+/* Must live in the base layer: unlayered rules beat Tailwind's utilities
+   layer, so an unlayered "* { padding: 0 }" silently cancels every p-* / m-*
+   class in the app. */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+  background-clip: content-box;
+}
+
+/* ── Shared component primitives ───────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  transition: background-color .15s, border-color .15s, color .15s, box-shadow .15s;
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+.btn-secondary {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn-secondary:hover:not(:disabled) { border-color: var(--border-strong); background: var(--bg-subtle); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover:not(:disabled) { background: var(--bg-subtle); color: var(--text); }
+
+.btn-danger-ghost {
+  background: transparent;
+  color: var(--red);
+}
+.btn-danger-ghost:hover:not(:disabled) { background: var(--red-soft); }
+
+.input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 13.5px;
+  color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+  width: 100%;
+}
+.input::placeholder { color: var(--text-muted); }
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-focus);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.badge-accent { background: var(--accent-soft); color: var(--accent-text); }
+.badge-blue { background: var(--blue-soft); color: var(--blue); }
+.badge-amber { background: var(--amber-soft); color: var(--amber); }
+.badge-purple { background: var(--purple-soft); color: var(--purple); }
+.badge-green { background: var(--green-soft); color: var(--green); }
+.badge-red { background: var(--red-soft); color: var(--red); }
+.badge-neutral { background: var(--bg-subtle); color: var(--text-muted); border: 1px solid var(--border); }
+
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Animations ─────────────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up .35s ease both; }
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border) 37%, var(--bg-subtle) 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.7); }
+}
+.pulse-dot { animation: pulse-dot 1.3s ease infinite; }
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.stream-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  animation: cursor-blink .8s steps(1) infinite;
+  vertical-align: text-bottom;
+}
+
+/* ── Landing page ───────────────────────────────────────────────────── */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 20%, transparent 75%);
+  opacity: .6;
+  pointer-events: none;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 65%);
+  top: -280px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: .16;
+  pointer-events: none;
+  filter: blur(40px);
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.feature-card:hover {
+  border-color: var(--fc, var(--accent));
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.feature-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fc-soft, var(--accent-soft));
+  color: var(--fc, var(--accent));
+}
+
+/* ── Prose (markdown answers) ───────────────────────────────────────── */
+.prose-answer {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text);
+}
+.prose-answer p { margin: 0 0 .6em; }
+.prose-answer p:last-child { margin-bottom: 0; }
+.prose-answer strong { font-weight: 600; color: var(--text); }
+.prose-answer ul, .prose-answer ol { margin: .4em 0 .6em; padding-left: 1.3em; }
+.prose-answer li { margin: .2em 0; }
+.prose-answer code {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: var(--font-mono);
+  font-size: .88em;
+}
+.prose-answer pre {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: .5em 0;
+}
+.prose-answer pre code { background: none; border: none; padding: 0; }
+.prose-answer a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.prose-answer table { border-collapse: collapse; width: 100%; margin: .5em 0; font-size: .92em; }
+.prose-answer th, .prose-answer td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+.prose-answer th { background: var(--bg-subtle); font-weight: 600; }

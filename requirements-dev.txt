@@ -1,0 +1,6 @@
+# Tools for tests, the evaluation suite and the benchmark script.
+-r requirements.txt
+pytest==8.3.5
+httpx==0.28.1
+requests==2.32.5
+matplotlib==3.10.8

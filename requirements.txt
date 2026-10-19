@@ -1,0 +1,40 @@
+# Runtime dependencies for InsightAI (Python 3.11 or 3.12).
+# Only packages the code imports directly; pip resolves the rest.
+# Dev/test tools live in requirements-dev.txt.
+
+# API server
+fastapi==0.125.0
+uvicorn[standard]==0.38.0
+python-multipart==0.0.21
+pydantic==2.9.2
+python-dotenv==1.1.1
+slowapi==0.1.10
+
+# LLM + RAG
+langchain==0.3.7
+langchain-core==0.3.21
+langchain-community==0.3.7
+langchain-groq==0.2.1
+langchain-huggingface==0.1.2
+langchain-text-splitters==0.3.2
+groq==0.31.0
+sentence-transformers==5.2.0
+# Pinned to the versions the project was developed with: newer major
+# releases of these two change APIs that langchain-huggingface 0.1 uses.
+transformers==4.57.3
+huggingface-hub==0.36.0
+faiss-cpu==1.13.1
+rank_bm25==0.2.2
+
+# Data, parsing, forecasting
+numpy==1.26.4
+pandas==2.3.2
+openpyxl==3.1.5
+pypdf==5.4.0
+python-docx==1.2.0
+langdetect==1.0.9
+prophet==1.4.0
+
+# Chat-history cache (real Redis if reachable, otherwise in-process fakeredis)
+redis==7.1.0
+fakeredis==2.38.0

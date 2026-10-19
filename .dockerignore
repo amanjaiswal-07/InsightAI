@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.git
+.venv
+venv
+__pycache__
+.pytest_cache
+data
+uploads
+logs
+benchmark_output
+evaluation/_tmp
+frontend/node_modules
+frontend/dist
